@@ -34,7 +34,7 @@ nvim --version
 ### Step 2: Install the ASL Language Server
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/asl-lsp-server.git
+git clone https://github.com/rperez-torro/asl-lsp-server.git
 cd asl-lsp-server
 npm install && npm run install-global
 
@@ -59,7 +59,18 @@ asl-lsp-server --version
 
 ```lua
 use {
-  "YOUR_GITHUB_USERNAME/mason-asl-lsp",
+  "rperez-torro/mason-asl-lsp",
+  config = function()
+    require("mason-asl-lsp").setup()
+  end,
+}
+```
+
+#### Using packer.nvim
+
+```lua
+{
+  "rperez-torro/mason-asl-lsp",
   config = function()
     require("mason-asl-lsp").setup()
   end,
@@ -151,13 +162,13 @@ require("mason-asl-lsp").setup({
 
 ### Common Issues
 
-| Issue                   | Solution                                                                                                                                             |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| "Requires Neovim 0.11+" | Upgrade Neovim to version 0.11 or newer                                                                                                              |
-| LSP not starting        | Run `:AslLspCheck` to verify server installation                                                                                                     |
-| No completions          | Ensure file extension is `.asl.json` or `.asl.yaml`                                                                                                  |
-| Server not found        | Install server: `git clone https://github.com/YOUR_GITHUB_USERNAME/asl-lsp-server.git && cd asl-lsp-server && npm install && npm run install-global` |
-| Config not registered   | Restart Neovim after plugin installation                                                                                                             |
+| Issue                   | Solution                                                                                                                                     |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Requires Neovim 0.11+" | Upgrade Neovim to version 0.11 or newer                                                                                                      |
+| LSP not starting        | Run `:AslLspCheck` to verify server installation                                                                                             |
+| No completions          | Ensure file extension is `.asl.json` or `.asl.yaml`                                                                                          |
+| Server not found        | Install server: `git clone https://github.com/rperez-torro/asl-lsp-server.git && cd asl-lsp-server && npm install && npm run install-global` |
+| Config not registered   | Restart Neovim after plugin installation                                                                                                     |
 
 ### Verify LSP Status
 
@@ -208,7 +219,7 @@ States:
 
 ## 🔗 Related Projects
 
-- **[asl-lsp-server](https://github.com/YOUR_GITHUB_USERNAME/asl-lsp-server)** - Core ASL Language Server
+- **[asl-lsp-server](https://github.com/rperez-torro/asl-lsp-server)** - Core ASL Language Server
 - **[amazon-states-language-service](https://github.com/aws/amazon-states-language-service)** - Official AWS ASL library
 
 ## 🤝 Contributing
