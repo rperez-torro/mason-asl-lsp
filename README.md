@@ -1,6 +1,11 @@
 # Mason ASL LSP
 
-A **zero-configuration** Mason plugin for seamless ASL Language Server integration with Neovim.
+A **zero-configuration** plugin for seamless ASL Language Server integration with **Neovim 0.11+**.
+
+## ⚠️ Requirements
+
+- **Neovim 0.11+** - Uses the modern native LSP API
+- **asl-lsp-server** - The actual language server binary
 
 ## ✨ True Zero Configuration
 
@@ -9,11 +14,6 @@ Just add the plugin - **no server configuration needed!**
 ```lua
 {
   "rperez-torro/mason-asl-lsp",
-  dependencies = {
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
-    "neovim/nvim-lspconfig",
-  },
   config = function()
     require("mason-asl-lsp").setup()
   end,
@@ -24,7 +24,14 @@ Just add the plugin - **no server configuration needed!**
 
 ## Installation
 
-### Step 1: Install the ASL Language Server
+### Step 1: Verify Neovim Version
+
+```bash
+nvim --version
+# Ensure you have v0.11.0 or newer
+```
+
+### Step 2: Install the ASL Language Server
 
 ```bash
 git clone https://github.com/rperez-torro/asl-lsp-server.git
@@ -35,18 +42,13 @@ npm install && npm run install-global
 asl-lsp-server --version
 ```
 
-### Step 2: Add Plugin to Neovim
+### Step 3: Add Plugin to Neovim
 
-#### Using lazy.nvim
+#### Using lazy.nvim (Recommended)
 
 ```lua
 {
   "rperez-torro/mason-asl-lsp",
-  dependencies = {
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
-    "neovim/nvim-lspconfig",
-  },
   config = function()
     require("mason-asl-lsp").setup()
   end,
@@ -58,28 +60,25 @@ asl-lsp-server --version
 ```lua
 use {
   "rperez-torro/mason-asl-lsp",
-  requires = {
-    "williamboman/mason.nvim",
-    "williamboman/mason-lspconfig.nvim",
-    "neovim/nvim-lspconfig",
-  },
   config = function()
     require("mason-asl-lsp").setup()
   end,
 }
 ```
 
-### Step 3: Done! ✅
+### Step 4: Done! ✅
 
 Restart Neovim and open any `.asl.json` or `.asl.yaml` file. The LSP will start automatically!
 
 ## 🎯 What You Get
 
-- **✅ Automatic LSP registration** - No need to add `asl_lsp = {}` to your servers table
+- **✅ Modern LSP Integration** - Uses Neovim 0.11+ native `vim.lsp.config()` API
+- **✅ Automatic LSP registration** - No need for nvim-lspconfig or complex setup
 - **✅ File pattern detection** - Automatically detects `.asl.json`, `.asl.yaml`, `.asl.yml`, `.asl` files
-- **✅ Mason integration** - Prevents registry conflicts automatically
+- **✅ Zero dependencies** - No Mason or lspconfig required
 - **✅ Smart capabilities** - Auto-integrates with nvim-cmp if available
 - **✅ Installation check** - Use `:AslLspCheck` to verify server installation
+- **✅ Manual control** - Use `:AslLspEnable` to manually start the server
 
 ## 🚀 Features
 
@@ -112,8 +111,8 @@ require("mason-asl-lsp").setup({
   -- Override filetypes
   filetypes = { "json", "yaml" },
 
-  -- Override root directory detection
-  root_dir = require('lspconfig.util').root_pattern('.asl', '.git', 'package.json'),
+  -- Override root directory detection patterns
+  root_markers = { '.asl', '.git', 'package.json' },
 
   -- Override LSP settings
   settings = {
@@ -134,24 +133,31 @@ require("mason-asl-lsp").setup({
 })
 ```
 
-**Note**: With `auto_setup = false`, you'll need to manually add `asl_lsp = {}` to your servers table.
+**Note**: With `auto_setup = false`, you'll need to manually call `:AslLspEnable` to start the server.
 
 ## 🛠 Troubleshooting
 
-### Check Installation
+### Check Installation & Configuration
 
 ```vim
 :AslLspCheck
 ```
 
+### Enable Server Manually
+
+```vim
+:AslLspEnable
+```
+
 ### Common Issues
 
-| Issue            | Solution                                                                                                                                     |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| LSP not starting | Run `:AslLspCheck` to verify server installation                                                                                             |
-| No completions   | Ensure file extension is `.asl.json` or `.asl.yaml`                                                                                          |
-| Mason errors     | Plugin automatically prevents registry conflicts                                                                                             |
-| Server not found | Install server: `git clone https://github.com/rperez-torro/asl-lsp-server.git && cd asl-lsp-server && npm install && npm run install-global` |
+| Issue                   | Solution                                                                                                                                     |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Requires Neovim 0.11+" | Upgrade Neovim: `brew install nvim` or build from source                                                                                     |
+| LSP not starting        | Run `:AslLspCheck` to verify server installation                                                                                             |
+| No completions          | Ensure file extension is `.asl.json` or `.asl.yaml`                                                                                          |
+| Server not found        | Install server: `git clone https://github.com/rperez-torro/asl-lsp-server.git && cd asl-lsp-server && npm install && npm run install-global` |
+| Config not registered   | Restart Neovim after plugin installation                                                                                                     |
 
 ### Verify LSP Status
 
@@ -159,7 +165,7 @@ require("mason-asl-lsp").setup({
 :LspInfo
 ```
 
-Should show `asl_lsp` attached to ASL files.
+Should show `asl_lsp` attached to ASL files without warnings.
 
 ## 📁 Supported File Patterns
 
@@ -207,16 +213,19 @@ States:
 
 ## 📋 Why This Plugin?
 
-**Before**: Complex manual setup with 50+ lines of configuration  
+**Before**: Complex manual setup with 50+ lines of configuration + dependency management  
 **After**: Zero-configuration - just add the plugin!
 
 This plugin eliminates the need for:
 
 - ❌ Manual server registration with lspconfig
-- ❌ Mason exclusion filters
+- ❌ Mason and mason-lspconfig dependencies
+- ❌ Complex dependency management
 - ❌ File detection autocmds
 - ❌ Capability setup
 - ❌ Adding servers to your configuration table
+
+**Powered by Neovim 0.11+ native LSP API** - no external dependencies required!
 
 ## 🤝 Contributing
 
