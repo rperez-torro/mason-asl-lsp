@@ -14,6 +14,7 @@ local default_config = {
     }
   },
   auto_detect = true,
+  auto_setup = true, -- Automatically setup the server without user config
 }
 
 -- Setup function to be called by users
@@ -62,6 +63,26 @@ Or install from source:
         },
       },
     }
+  end
+  
+  -- Auto-setup the server if enabled (this makes it zero-configuration)
+  if opts.auto_setup then
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    
+    -- Try to get capabilities from nvim-cmp if available
+    local ok_cmp, cmp_lsp = pcall(require, 'cmp_nvim_lsp')
+    if ok_cmp then
+      capabilities = vim.tbl_deep_extend('force', capabilities, cmp_lsp.default_capabilities())
+    end
+    
+    -- Setup the server automatically - no user config needed!
+    lspconfig.asl_lsp.setup({
+      cmd = opts.cmd,
+      filetypes = opts.filetypes,
+      root_dir = opts.root_dir,
+      settings = opts.settings,
+      capabilities = capabilities,
+    })
   end
   
   -- Setup file detection if enabled
